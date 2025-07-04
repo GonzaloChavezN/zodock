@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import { expect as viExpect } from 'vitest';
 import { createMock } from '../../src';
 

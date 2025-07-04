@@ -1,4 +1,4 @@
-import type { ZodDiscriminatedUnionOption, z } from 'zod';
+import type { ZodDiscriminatedUnionOption, z } from 'zod/v4';
 import MockGenerator from '../MockGenerator';
 import type BaseGenerator from './BaseGenerator';
 

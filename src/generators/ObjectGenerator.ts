@@ -1,4 +1,4 @@
-import type { ZodRawShape, z } from 'zod';
+import type { ZodRawShape, z } from 'zod/v4';
 import MockGenerator from '../MockGenerator';
 import { DepthLimitError } from '../errors/DepthLimitError';
 import type BaseGenerator from './BaseGenerator';

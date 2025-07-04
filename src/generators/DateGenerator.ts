@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import type BaseGenerator from './BaseGenerator';
 
 export default class DateGenerator<T extends z.ZodDate> implements BaseGenerator<T> {

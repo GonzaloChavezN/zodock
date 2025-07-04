@@ -1,4 +1,4 @@
-import type { TypeOf, ZodFirstPartyTypeKind, z } from 'zod';
+import type { ZodType, z } from 'zod/v4';
 import StringGenerator from './generators/StringGenerator';
 import type BaseGenerator from './generators/BaseGenerator';
 import NumberGenerator from './generators/NumberGenerator';
@@ -11,16 +11,13 @@ import ObjectGenerator from './generators/ObjectGenerator';
 import ArrayGenerator from './generators/ArrayGenerator';
 import UnionGenerator from './generators/UnionGenerator';
 import TuppleGenerator from './generators/TuppleGenerator';
-import EffectsGenerator from './generators/EffectsGenerator';
 import OptionalGenerator from './generators/OptionalGenerator';
 import NaNGenerator from './generators/NaNGenerator';
 import BigIntGenerator from './generators/BigIntGenerator';
 import SymbolGenerator from './generators/SymbolGenerator';
 import VoidGenerator from './generators/VoidGenerator';
 import EnumGenerator from './generators/EnumGenerator';
-import NativeEnumGenerator from './generators/NativeEnumGenerator';
 import NullableGenerator from './generators/NullableGenerator';
-import DiscriminatedUnionGenerator from './generators/DiscriminatedUnionGenerator';
 import IntersectionGenerator from './generators/IntersectionGenerator';
 import DefaultGenerator from './generators/DefaultGenerator';
 import CatchGenerator from './generators/CatchGenerator';
@@ -29,61 +26,54 @@ import MapGenerator from './generators/MapGenerator';
 import SetGenerator from './generators/SetGenerator';
 import RecordGenerator from './generators/RecordGenerator';
 import PipelineGenerator from './generators/PipelineGenerator';
-import BrandedGenerator from './generators/BrandedGenerator';
-import FunctionGenerator from './generators/FunctionGenerator';
 import LazyGenerator from './generators/LazyGenerator';
 import ReadonlyGenerator from './generators/ReadonlyGenerator';
 import { DepthLimitError } from './errors/DepthLimitError';
 
 const _schemasCache = new WeakMap<z.ZodTypeAny, any>();
 export default class MockGenerator<T extends z.ZodTypeAny> {
-  private generator: BaseGenerator<TypeOf<T>>;
+  private generator: BaseGenerator<T>;
   private schema: T;
   private readonly MAX_DEPTH = 3;
 
   constructor(schema: T) {
     this.schema = schema;
 
-    const generatorMap: Partial<Record<ZodFirstPartyTypeKind, any>> = {
-      ZodString: StringGenerator,
-      ZodNumber: NumberGenerator,
-      ZodBoolean: BooleanGenerator,
-      ZodLiteral: LiteralGenerator,
-      ZodDate: DateGenerator,
-      ZodNull: NullGenerator,
-      ZodUndefined: UndefinedGenerator,
-      ZodAny: StringGenerator,
-      ZodUnknown: StringGenerator,
-      ZodObject: ObjectGenerator,
-      ZodArray: ArrayGenerator,
-      ZodUnion: UnionGenerator,
-      ZodTuple: TuppleGenerator,
-      ZodEffects: EffectsGenerator,
-      ZodOptional: OptionalGenerator,
-      ZodNaN: NaNGenerator,
-      ZodBigInt: BigIntGenerator,
-      ZodSymbol: SymbolGenerator,
-      ZodVoid: VoidGenerator,
-      ZodEnum: EnumGenerator,
-      ZodNativeEnum: NativeEnumGenerator,
-      ZodNullable: NullableGenerator,
-      ZodDiscriminatedUnion: DiscriminatedUnionGenerator,
-      ZodIntersection: IntersectionGenerator,
-      ZodDefault: DefaultGenerator,
-      ZodCatch: CatchGenerator,
-      ZodPromise: PromiseGenerator,
-      ZodMap: MapGenerator,
-      ZodSet: SetGenerator,
-      ZodRecord: RecordGenerator,
-      ZodPipeline: PipelineGenerator,
-      ZodBranded: BrandedGenerator,
-      ZodFunction: FunctionGenerator,
-      ZodLazy: LazyGenerator,
-      ZodReadonly: ReadonlyGenerator,
+    const generatorMap: Partial<Record<ZodType['type'], any>> = {
+      string: StringGenerator,
+      number: NumberGenerator,
+      boolean: BooleanGenerator,
+      literal: LiteralGenerator,
+      date: DateGenerator,
+      null: NullGenerator,
+      undefined: UndefinedGenerator,
+      any: StringGenerator,
+      unknown: StringGenerator,
+      object: ObjectGenerator,
+      array: ArrayGenerator,
+      union: UnionGenerator,
+      tuple: TuppleGenerator,
+      optional: OptionalGenerator,
+      nan: NaNGenerator,
+      bigint: BigIntGenerator,
+      symbol: SymbolGenerator,
+      void: VoidGenerator,
+      enum: EnumGenerator,
+      nullable: NullableGenerator,
+      intersection: IntersectionGenerator,
+      default: DefaultGenerator,
+      catch: CatchGenerator,
+      promise: PromiseGenerator,
+      map: MapGenerator,
+      set: SetGenerator,
+      record: RecordGenerator,
+      pipe: PipelineGenerator,
+      lazy: LazyGenerator,
+      readonly: ReadonlyGenerator,
     };
 
-    if (this.schema._def.typeName in generatorMap) {
-      this.generator = new generatorMap[this.schema._def.typeName as ZodFirstPartyTypeKind]();
+    if (this.schema.def.type in generatorMap) {
+      this.generator = new generatorMap[this.schema.def.type]();
       return;
     }
 

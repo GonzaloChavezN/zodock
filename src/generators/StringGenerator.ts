@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import type BaseGenerator from './BaseGenerator';
 
 export default class StringGenerator<T extends z.ZodString> implements BaseGenerator<T> {

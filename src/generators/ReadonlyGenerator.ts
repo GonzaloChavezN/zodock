@@ -1,4 +1,4 @@
-import type { ZodReadonly, ZodTypeAny } from 'zod';
+import type { ZodReadonly, ZodTypeAny } from 'zod/v4';
 import MockGenerator from '../MockGenerator';
 import type BaseGenerator from './BaseGenerator';
 

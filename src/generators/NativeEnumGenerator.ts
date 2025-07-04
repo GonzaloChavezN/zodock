@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import type BaseGenerator from './BaseGenerator';
 
 export default class NativeEnumGenerator<TOptions extends z.EnumLike, T extends z.ZodNativeEnum<TOptions>> implements BaseGenerator<T> {

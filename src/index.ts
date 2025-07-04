@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import MockGenerator from './MockGenerator';
 
 function createMock<Schema extends z.ZodTypeAny>(schema: Schema): z.infer<typeof schema> {
