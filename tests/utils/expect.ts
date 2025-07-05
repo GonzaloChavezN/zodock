@@ -1,7 +1,8 @@
-import type { z } from 'zod/v4';
+import * as z from 'zod/v4/core';
 import { expect as viExpect } from 'vitest';
 import { createMock } from '../../src';
 
-export function expect<T extends z.ZodTypeAny>(schema: T) {
-  return viExpect(schema.safeParse(createMock(schema)).success).toBe(true);
+export function expect<T extends z.$ZodType>(schema: T) {
+  const mock = createMock(schema);
+  return viExpect(z.safeParse(schema, mock).success).toBe(true);
 }

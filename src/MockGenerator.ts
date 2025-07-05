@@ -1,4 +1,4 @@
-import type { ZodType, z } from 'zod/v4';
+import type * as z from 'zod/v4/core';
 import StringGenerator from './generators/StringGenerator';
 import type BaseGenerator from './generators/BaseGenerator';
 import NumberGenerator from './generators/NumberGenerator';
@@ -30,8 +30,8 @@ import LazyGenerator from './generators/LazyGenerator';
 import ReadonlyGenerator from './generators/ReadonlyGenerator';
 import { DepthLimitError } from './errors/DepthLimitError';
 
-const _schemasCache = new WeakMap<z.ZodTypeAny, any>();
-export default class MockGenerator<T extends z.ZodTypeAny> {
+const _schemasCache = new WeakMap<z.$ZodType, any>();
+export default class MockGenerator<T extends z.$ZodType> {
   private generator: BaseGenerator<T>;
   private schema: T;
   private readonly MAX_DEPTH = 3;
@@ -39,7 +39,7 @@ export default class MockGenerator<T extends z.ZodTypeAny> {
   constructor(schema: T) {
     this.schema = schema;
 
-    const generatorMap: Partial<Record<ZodType['type'], any>> = {
+    const generatorMap: Partial<Record<z.$ZodType['_zod']['def']['type'], any>> = {
       string: StringGenerator,
       number: NumberGenerator,
       boolean: BooleanGenerator,
@@ -72,8 +72,8 @@ export default class MockGenerator<T extends z.ZodTypeAny> {
       readonly: ReadonlyGenerator,
     };
 
-    if (this.schema.def.type in generatorMap) {
-      this.generator = new generatorMap[this.schema.def.type]();
+    if (this.schema._zod.def.type in generatorMap) {
+      this.generator = new generatorMap[this.schema._zod.def.type]();
       return;
     }
 
