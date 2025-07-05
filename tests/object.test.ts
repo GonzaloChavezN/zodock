@@ -19,12 +19,12 @@ describe('Object', () => {
     expect(schema);
   });
   test('nonstrict', () => {
-    const schema = z.object({ foo: z.string(), bar: z.number() }).nonstrict();
+    const schema = z.object({ foo: z.string(), bar: z.number() }).strip();
 
     expect(schema);
   });
   test('passthrough', () => {
-    const schema = z.object({ foo: z.string(), bar: z.number() }).passthrough();
+    const schema = z.looseObject({ foo: z.string(), bar: z.number() });
 
     expect(schema);
   });

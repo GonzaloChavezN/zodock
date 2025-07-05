@@ -1,26 +1,44 @@
-import type { z } from 'zod/v4';
+import * as z from 'zod/v4/core';
 import type BaseGenerator from './BaseGenerator';
 
-export default class BigIntGenerator<T extends z.ZodBigInt> implements BaseGenerator<T> {
+export default class BigIntGenerator<T extends z.$ZodBigInt> implements BaseGenerator<T> {
   public generate(schema: T) {
-    let bigInt: z.infer<T> = BigInt(1);
+    let bigInt = BigInt(1);
 
-    if (schema._def.checks && schema._def.checks.length > 0) {
-      for (const check of schema._def.checks) {
-        switch (check.kind) {
-          case 'min':
-            bigInt = check.value + BigInt(1);
-            break;
-          case 'max':
-            bigInt = check.value - BigInt(1);
-            break;
-          case 'multipleOf':
-            bigInt = check.value;
-            break;
+    if (schema._zod.def.checks && schema._zod.def.checks.length > 0) {
+      for (const check of schema._zod.def.checks) {
+        if (check instanceof z.$ZodCheckGreaterThan) {
+          const { value } = check._zod.def;
+          if (typeof value === 'bigint') {
+            bigInt = BigInt(value) + 1n;
+          }
+          else if (typeof value === 'number') {
+            bigInt = BigInt(value) + 1n;
+          }
+        }
+        else if (check instanceof z.$ZodCheckLessThan) {
+          const { value } = check._zod.def;
+
+          if (typeof value === 'bigint') {
+            const maxBigInt = BigInt(value) - 1n;
+            bigInt = maxBigInt;
+          }
+          else if (typeof value === 'number') {
+            const maxBigInt = BigInt(value) - 1n;
+            bigInt = maxBigInt;
+          }
+        }
+        else if (check instanceof z.$ZodCheckMultipleOf) {
+          if (typeof check._zod.def.value === 'bigint') {
+            bigInt = BigInt(bigInt % check._zod.def.value === 0n ? bigInt : bigInt - (bigInt % check._zod.def.value));
+          }
+          else if (typeof check._zod.def.value === 'number') {
+            bigInt = BigInt(bigInt % BigInt(check._zod.def.value) === 0n ? bigInt : bigInt - (bigInt % BigInt(check._zod.def.value)));
+          }
         }
       }
     }
 
-    return bigInt;
+    return bigInt as z.infer<T>;
   }
 }

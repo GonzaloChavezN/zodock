@@ -10,6 +10,7 @@ describe('Date', () => {
   });
   test('min', () => {
     const now = new Date();
+
     const endOfTomorrow = new Date(0);
     endOfTomorrow.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     endOfTomorrow.setHours(23, 59, 59, 999);

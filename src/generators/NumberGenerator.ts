@@ -1,31 +1,34 @@
-import type { z } from 'zod/v4';
+import * as z from 'zod/v4/core';
 import type BaseGenerator from './BaseGenerator';
 
-export default class NumberGenerator<T extends z.ZodNumber> implements BaseGenerator<T> {
+export default class NumberGenerator<T extends z.$ZodNumber> implements BaseGenerator<T> {
   public generate(schema: T) {
-    let number: z.infer<T> = this.randomInt();
+    let number = this.randomInt();
 
-    if (schema._def.checks && schema._def.checks.length > 0) {
-      for (const check of schema._def.checks) {
-        switch (check.kind) {
-          case 'int':
-          case 'finite':
-            number = this.randomInt();
-            break;
-          case 'min':
-            number = check.value + 1;
-            break;
-          case 'max':
-            number = check.value - 1;
-            break;
-          case 'multipleOf':
-            number = check.value;
-            break;
+    if (schema._zod.def.checks && schema._zod.def.checks.length > 0) {
+      for (const check of schema._zod.def.checks) {
+        if (check instanceof z.$ZodCheckGreaterThan) {
+          const { value } = check._zod.def;
+          if (typeof value === 'number') {
+            number = Math.max(number, value + 1);
+          }
+        }
+        else if (check instanceof z.$ZodCheckLessThan) {
+          const { value } = check._zod.def;
+          if (typeof value === 'number') {
+            number = Math.min(number, value - 1);
+          }
+        }
+        else if (check instanceof z.$ZodCheckMultipleOf) {
+          const multiple = check._zod.def.value;
+          if (typeof multiple === 'number') {
+            number = number - (number % multiple);
+          }
         }
       }
     }
 
-    return number;
+    return number as z.infer<T>;
   }
 
   private randomInt() {

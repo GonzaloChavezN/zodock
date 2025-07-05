@@ -4,7 +4,7 @@ import { expect } from './utils/expect';
 
 describe('Record', () => {
   test('base', () => {
-    const schema = z.record(z.string());
+    const schema = z.record(z.string(), z.symbol());
 
     expect(schema);
   });

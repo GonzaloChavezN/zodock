@@ -9,12 +9,12 @@ describe('String', () => {
     expect(schema);
   });
   test('uuid', () => {
-    const schema = z.string().uuid();
+    const schema = z.uuid();
 
     expect(schema);
   });
   test('email', () => {
-    const schema = z.string().email();
+    const schema = z.email();
 
     expect(schema);
   });
@@ -34,7 +34,7 @@ describe('String', () => {
     expect(schema);
   });
   test('datetime', () => {
-    const schema = z.string().datetime();
+    const schema = z.iso.datetime();
 
     expect(schema);
   });
@@ -44,18 +44,18 @@ describe('String', () => {
     expect(schema);
   });
   test('url', () => {
-    const schema = z.string().url();
+    const schema = z.url();
 
     expect(schema);
   });
   test('emoji', () => {
-    const schema = z.string().emoji();
+    const schema = z.emoji();
 
     expect(schema);
   });
   test('ip', () => {
-    const schemaV4 = z.string().ip({ version: 'v4' });
-    const schemaV6 = z.string().ip({ version: 'v6' });
+    const schemaV4 = z.ipv4({ version: 'v4' });
+    const schemaV6 = z.ipv6({ version: 'v6' });
 
     expect(schemaV4);
     expect(schemaV6);

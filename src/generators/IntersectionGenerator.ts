@@ -1,27 +1,26 @@
-import type { z } from 'zod/v4';
+import * as z from 'zod/v4/core';
 import MockGenerator from '../MockGenerator';
 import type BaseGenerator from './BaseGenerator';
 
-export default class IntersectionGenerator<T extends z.ZodIntersection<z.ZodTypeAny, z.ZodTypeAny>> implements BaseGenerator<T> {
+export default class IntersectionGenerator<T extends z.$ZodIntersection> implements BaseGenerator<T> {
   public generate(schema: T) {
-    const { _def: leftDef } = schema._def.left;
-    const { _def: rightDef } = schema._def.right;
+    const { left, right } = schema._zod.def;
 
-    if ('typeName' in leftDef && 'typeName' in rightDef) {
-      if (leftDef.typeName === 'ZodUnion' && rightDef.typeName === 'ZodUnion') {
-        const sharedOptions = leftDef.options.filter((leftOption: z.ZodTypeAny) => {
-          return rightDef.options.some((rightOption: z.ZodTypeAny) => rightOption._def.typeName === leftOption._def.typeName);
-        });
-        const randomIndex = Math.floor(Math.random() * sharedOptions.length);
-        const randomOption = sharedOptions[randomIndex];
+    if (left instanceof z.$ZodUnion && right instanceof z.$ZodUnion) {
+      const leftDef = left._zod.def;
+      const rightDef = right._zod.def;
+      const sharedOptions = leftDef.options.filter((leftOption: z.$ZodType) => {
+        return rightDef.options.some((rightOption: z.$ZodType) => rightOption._zod.def.type === leftOption._zod.def.type);
+      });
+      const randomIndex = Math.floor(Math.random() * sharedOptions.length);
+      const randomOption = sharedOptions[randomIndex];
 
-        const mockGenerator = new MockGenerator(randomOption);
-        return mockGenerator.generate();
-      }
+      const mockGenerator = new MockGenerator(randomOption);
+      return mockGenerator.generate();
     }
 
-    const leftGenerated = new MockGenerator(schema._def.left).generate();
-    const rightGenerated = new MockGenerator(schema._def.right).generate();
+    const leftGenerated = new MockGenerator(schema._zod.def.left).generate();
+    const rightGenerated = new MockGenerator(schema._zod.def.right).generate();
     const merged = this.mergeValues(leftGenerated, rightGenerated);
     return merged;
   }

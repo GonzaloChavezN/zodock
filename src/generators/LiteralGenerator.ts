@@ -1,8 +1,9 @@
-import type { z } from 'zod/v4';
+import type * as z from 'zod/v4/core';
 import type BaseGenerator from './BaseGenerator';
 
-export default class LiteralGenerator<T extends z.ZodLiteral<unknown>> implements BaseGenerator<T> {
+export default class LiteralGenerator<T extends z.$ZodLiteral> implements BaseGenerator<T> {
   public generate(schema: T) {
-    return schema._def.value;
+    const { values } = schema._zod.def;
+    return values[Math.floor(Math.random() * values.length)] as z.infer<T>;
   }
 }

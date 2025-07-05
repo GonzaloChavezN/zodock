@@ -1,51 +1,57 @@
-import type { z } from 'zod/v4';
+import * as z from 'zod/v4/core';
 import type BaseGenerator from './BaseGenerator';
 
-export default class StringGenerator<T extends z.ZodString> implements BaseGenerator<T> {
+export default class StringGenerator<T extends z.$ZodString> implements BaseGenerator<T> {
   public generate(schema: T) {
-    let string: z.infer<T> = this.getRandomString();
+    let string = this.getRandomString();
 
-    if (schema._def.checks && schema._def.checks.length > 0) {
-      for (const check of schema._def.checks) {
-        switch (check.kind) {
-          case 'uuid':
-            string = this.getRandomUUID();
-            break;
-          case 'email':
-            string = this.getRandomEmail();
-            break;
-          case 'datetime':
-            string = new Date().toISOString();
-            break;
-          case 'url':
-            string = `https://${this.getRandomString()}.com`;
-            break;
-          case 'emoji':
-            string = '😀';
-            break;
-          case 'ip':
-            string = this.getRandomIP(check.version!);
-            break;
-          case 'includes':
-          case 'startsWith':
-            string = `${check.value}${string}`;
-            break;
-          case 'endsWith':
-            string = `${string}${check.value}`;
-            break;
-          case 'min':
-          case 'max':
-          case 'length':
-            string = this.getRandomString().substring(0, check.value);
-            break;
+    if (schema instanceof z.$ZodUUID) {
+      string = this.getRandomUUID();
+    }
+    else if (schema instanceof z.$ZodEmail) {
+      string = this.getRandomEmail();
+    }
+    else if (schema instanceof z.$ZodISODateTime) {
+      string = new Date().toISOString();
+    }
+    else if (schema instanceof z.$ZodURL) {
+      string = `https://${this.getRandomString()}.com`;
+    }
+    else if (schema instanceof z.$ZodEmoji) {
+      string = '😀';
+    }
+    else if (schema instanceof z.$ZodIPv4 || schema instanceof z.$ZodIPv6) {
+      string = this.getRandomIP(schema._zod.def.version!);
+    }
+
+    if (schema._zod.def.checks && schema._zod.def.checks.length > 0) {
+      for (const check of schema._zod.def.checks) {
+        if (check instanceof z.$ZodCheckStartsWith) {
+          string = `${check._zod.def.prefix}${string}`;
+        }
+        else if (check instanceof z.$ZodCheckEndsWith) {
+          string = `${string}${check._zod.def.suffix}`;
+        }
+        else if (check instanceof z.$ZodCheckIncludes) {
+          string = `${check._zod.def.includes}${string}`;
+        }
+        if (check instanceof z.$ZodCheckMinLength) {
+          string = string.padEnd(check._zod.def.minimum, 'x');
+        }
+        if (check instanceof z.$ZodCheckMaxLength) {
+          string = string.slice(0, check._zod.def.maximum);
+        }
+        if (check instanceof z.$ZodCheckLengthEquals) {
+          string = string.slice(0, check._zod.def.length);
+          string = string.padEnd(check._zod.def.length, 'x');
         }
       }
     }
 
-    return string;
+    return string as z.infer<T>;
   }
 
-  public getRandomEmail(): z.infer<T> {
+  public getRandomEmail(): string {
     const email = `${this.getRandomString()}@${this.getRandomString()}.com`;
     return email;
   }
