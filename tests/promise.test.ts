@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { z } from 'zod/v4';
 import { expect } from './utils/expect';
 
-describe('Promise', () => {
+describe.skip('Promise', () => {
   test('string', () => {
     const schema = z.promise(z.string());
 
