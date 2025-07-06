@@ -38,16 +38,16 @@ describe('Effects', () => {
     viExpect(createMock(schemaExtended).data.baz).toBeDefined();
   });
 
-  test.skip('refine', () => {
+  test('refine', () => {
     const isValidId = (id: string): boolean => id.length > 20;
     const schema = z.string().refine(isValidId);
 
     expect(schema);
   });
 
-  test.skip('preprocess', () => {
+  test('preprocess', () => {
     const schema = z.preprocess(val => String(val), z.string());
 
-    expect(schema.in);
+    expect(schema);
   });
 });
