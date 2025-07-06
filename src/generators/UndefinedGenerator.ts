@@ -3,6 +3,6 @@ import type BaseGenerator from './BaseGenerator';
 
 export default class UndefinedGenerator<T extends z.ZodUndefined> implements BaseGenerator<T> {
   public generate() {
-    return undefined;
+    return undefined as z.infer<T>;
   }
 }

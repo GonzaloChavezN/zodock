@@ -38,6 +38,6 @@ export default class SetGenerator<T extends z.$ZodSet> implements BaseGenerator<
       return set;
     }
 
-    return new Set([generatedValue]);
+    return new Set([generatedValue]) as any;
   }
 }

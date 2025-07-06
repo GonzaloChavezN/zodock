@@ -6,6 +6,6 @@ export default class EnumGenerator<T extends z.$ZodEnum<any>> implements BaseGen
     const { entries } = schema._zod.def;
     const options = Object.values(entries);
 
-    return options[Math.floor(Math.random() * options.length)];
+    return options[Math.floor(Math.random() * options.length)] as z.infer<T>;
   }
 }

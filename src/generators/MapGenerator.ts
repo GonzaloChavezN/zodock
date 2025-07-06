@@ -10,6 +10,6 @@ export default class MapGenerator<T extends z.ZodMap> implements BaseGenerator<T
     const valueGenerator = new MockGenerator(schema._def.valueType);
     const generatedValue = valueGenerator.generate();
 
-    return new Map([[generatedKey, generatedValue]]);
+    return new Map([[generatedKey, generatedValue]]) as z.infer<T>;
   }
 }

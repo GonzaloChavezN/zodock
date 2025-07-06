@@ -3,6 +3,6 @@ import type BaseGenerator from './BaseGenerator';
 
 export default class BooleanGenerator<T extends z.ZodBoolean> implements BaseGenerator<T> {
   public generate() {
-    return Math.random() >= 0.5;
+    return Math.random() >= 0.5 as z.infer<T>;
   }
 }
