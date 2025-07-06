@@ -7,5 +7,6 @@
   "editor.tabSize": 2,
   "cSpell.words": [
     "zodock"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
