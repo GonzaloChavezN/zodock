@@ -21,7 +21,6 @@ import NullableGenerator from './generators/NullableGenerator';
 import IntersectionGenerator from './generators/IntersectionGenerator';
 import DefaultGenerator from './generators/DefaultGenerator';
 import CatchGenerator from './generators/CatchGenerator';
-import PromiseGenerator from './generators/PromiseGenerator';
 import MapGenerator from './generators/MapGenerator';
 import SetGenerator from './generators/SetGenerator';
 import RecordGenerator from './generators/RecordGenerator';
@@ -63,7 +62,6 @@ export default class MockGenerator<T extends z.$ZodType> {
       intersection: IntersectionGenerator,
       default: DefaultGenerator,
       catch: CatchGenerator,
-      promise: PromiseGenerator,
       map: MapGenerator,
       set: SetGenerator,
       record: RecordGenerator,
