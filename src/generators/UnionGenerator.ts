@@ -13,6 +13,10 @@ export default class UnionGenerator<const TOptions extends z.$ZodType[], const T
       return option._zod.def.options.length > 0;
     });
 
+    if (filteredOptions.length === 0) {
+      throw new Error('No valid options available for UnionGenerator');
+    }
+
     const randomIndex = Math.floor(Math.random() * filteredOptions.length);
     const randomOption = filteredOptions[randomIndex];
 

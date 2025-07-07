@@ -8,4 +8,10 @@ describe('Union', () => {
 
     expect(schema);
   });
+
+  test('union with empty union', () => {
+    const schema = z.union([z.string(), z.number(), z.boolean(), z.literal(''), z.union([])]);
+
+    expect(schema);
+  });
 });
